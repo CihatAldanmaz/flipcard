@@ -12,44 +12,83 @@ import '../App.css';
 const imageArray = [{
     id:1,
     image:maca1,
-    clicked:false
+    faceUp:false
 },
 {
     id:2,
     image:maca2,
-    clicked:false
+    faceUp:false
 },
 {
     id:3,
     image:maca3,
-    clicked:false
+    faceUp:false
 },
 {
     id:4,
     image:maca4,
-    clicked:false
+    faceUp:false
 },
 {
     id:5,
     image:maca5,
-    clicked:false
+    faceUp:false
 },
 {
     id:6,
     image:maca6,
-    clicked:false
+    faceUp:false
 }]
+
+const copyImages = [...imageArray, ...imageArray]
 
 
 export default class Dashboard extends Component {
-
     state={
-        images:[...imageArray, ...imageArray],
-        clickedImageID:null
+        images:copyImages,
+        firstCard:null,
+        secondCard:null,
+        matchedCards:[]
     }
 
-    getClickedImageID = (id) => {
-        console.log(id)
+     handler = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    compareCards = () => {
+        // if(!(this.state.firstCard===null) && !(this.state.secondCard===null)){
+        //     document.addEventListener("click",this.handler,true);
+        //     //define a settimeout and after 3 seconds, remove click disabled
+        //     //you stuck here
+        // }
+        if(this.state.firstCard.id===this.state.secondCard.id){
+            this.setState({
+                matchedCards:[...this.state.matchedCards, this.state.firstCard.id],
+                firstCard:null,
+                secondCard:null
+            })
+        }else{
+            setTimeout(()=>{
+                this.setState({
+                    firstCard:null,
+                    secondCard:null
+                })
+            },3000)
+        }
+    }
+
+    cardClick = (img) => {
+        if(this.state.firstCard===null){
+            this.setState({
+                firstCard:img
+            })
+        }else if(this.state.firstCard){
+            this.setState({
+                secondCard:img
+            },()=>{this.compareCards()})
+        }
+        
     }
     
 
@@ -57,7 +96,7 @@ export default class Dashboard extends Component {
     render() {
         return (
             <div className="dashboard">
-                <CardList images={this.state.images} getClickedImageID={this.getClickedImageID} />
+                <CardList images={this.state.images} cardClick={this.cardClick} firstCard={this.state.firstCard} secondCard={this.state.secondCard} matchedCards={this.state.matchedCards}/>
             </div>
         )
     }
