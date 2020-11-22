@@ -40,24 +40,49 @@ const imageArray = [{
     faceUp:false
 }]
 
-const copyImages = [...imageArray, ...imageArray]
 
 
 
 
 export default class Dashboard extends Component {
+
+    newImages = []
+
     state={
-        images:copyImages,
+        images:[],
         firstCard:null,
         secondCard:null,
         matchedCards:[],
         score:0
     }
 
-     handler = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
+    shuffleImages = () => {
+       let copyImages = [...imageArray, ...imageArray]
+        let newPos,
+            temp;
+
+            for(let i=copyImages.length-1; i>0; i--){
+                newPos=Math.floor(Math.random()*(i+1))
+                temp=copyImages[i];
+                copyImages[i]=copyImages[newPos];
+                copyImages[newPos]=temp
+            }
+          
+
+            this.setState({
+                images:copyImages
+            })
+    };
+
+    componentWillMount() {
+        this.shuffleImages()
     }
+    
+
+
+    
+
+    
 
 
     compareCards = () => {
@@ -77,7 +102,7 @@ export default class Dashboard extends Component {
                     firstCard:null,
                     secondCard:null,
                 })
-            },1000)
+            })
             
         }else{
             setTimeout(()=>{
@@ -85,7 +110,7 @@ export default class Dashboard extends Component {
                     firstCard:null,
                     secondCard:null
                 })
-            },1000)
+            })
                 
             
         }

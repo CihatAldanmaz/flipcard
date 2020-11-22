@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import BackCard from './BackCard'
 import FrontCard from './FrontCard'
+import ReactCardFlip from "react-card-flip";
+
 
 export default class Card extends Component {
     state={
@@ -15,13 +17,16 @@ export default class Card extends Component {
                         cardFaceUp:true,
                         
                     })
-                },200)
+                })
                  }
             
     }
 
-    reverseCard = () => {
-        
+    helperFunction = () => {
+        if(this.state.isLocked == false){
+            this.faceUp();
+            this.props.cardClick(this.props.image);
+        }
     }
 
     componentWillReceiveProps = (newProps) => {
@@ -43,7 +48,7 @@ export default class Card extends Component {
                     cardFaceUp:false
                     
                 })
-            },1000)   
+            },1500)   
         }else if(newProps.firstCard===null && !newProps.matchedCards.includes(this.props.image.id))
 
         if(newProps.matchedCards.includes(this.props.image.id)){
@@ -59,9 +64,15 @@ export default class Card extends Component {
     render() {
        
         return (
-            <div onClick={()=> {this.faceUp(); this.props.cardClick(this.props.image)}}>
-              {this.state.cardFaceUp ? <FrontCard img={this.props.image} /> : <BackCard />}
+            <ReactCardFlip isFlipped={this.state.cardFaceUp} flipDirection="horizontal">
+            <div onClick={()=> {this.helperFunction();}}>
+               <BackCard />
             </div>
+               <div>
+               <FrontCard img={this.props.image} /> 
+               </div>
+                
+            </ReactCardFlip>
         )
     }
 }
