@@ -43,18 +43,22 @@ const imageArray = [{
 const copyImages = [...imageArray, ...imageArray]
 
 
+
+
 export default class Dashboard extends Component {
     state={
         images:copyImages,
         firstCard:null,
         secondCard:null,
-        matchedCards:[]
+        matchedCards:[],
+        score:0
     }
 
      handler = (e) => {
         e.stopPropagation();
         e.preventDefault();
     }
+
 
     compareCards = () => {
         // if(!(this.state.firstCard===null) && !(this.state.secondCard===null)){
@@ -63,22 +67,32 @@ export default class Dashboard extends Component {
         //     //you stuck here
         // }
         if(this.state.firstCard.id===this.state.secondCard.id){
+
             this.setState({
                 matchedCards:[...this.state.matchedCards, this.state.firstCard.id],
-                firstCard:null,
-                secondCard:null
+                score:this.state.score+1
             })
+            setTimeout(()=>{
+                this.setState({
+                    firstCard:null,
+                    secondCard:null,
+                })
+            },1000)
+            
         }else{
             setTimeout(()=>{
                 this.setState({
                     firstCard:null,
                     secondCard:null
                 })
-            },3000)
+            },1000)
+                
+            
         }
     }
 
     cardClick = (img) => {
+       
         if(this.state.firstCard===null){
             this.setState({
                 firstCard:img
@@ -96,6 +110,7 @@ export default class Dashboard extends Component {
     render() {
         return (
             <div className="dashboard">
+                <h2>Score: {this.state.score}</h2>
                 <CardList images={this.state.images} cardClick={this.cardClick} firstCard={this.state.firstCard} secondCard={this.state.secondCard} matchedCards={this.state.matchedCards}/>
             </div>
         )

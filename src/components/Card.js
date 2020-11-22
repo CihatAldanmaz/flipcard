@@ -1,18 +1,23 @@
 import React, { Component } from 'react'
-import imageback from "../images/imgback.jpg"
+import BackCard from './BackCard'
+import FrontCard from './FrontCard'
 
 export default class Card extends Component {
     state={
-        cardFaceUp:false
+        cardFaceUp:false,
+        isLocked:false
     }
 
     faceUp = () => {
-       
-            this.setState({
-                cardFaceUp:true
-            })
-        
-        
+            if(this.state.isLocked==false){
+                setTimeout(()=>{
+                    this.setState({
+                        cardFaceUp:true,
+                        
+                    })
+                },200)
+                 }
+            
     }
 
     reverseCard = () => {
@@ -20,13 +25,25 @@ export default class Card extends Component {
     }
 
     componentWillReceiveProps = (newProps) => {
-       
+      if(!(newProps.firstCard===null) && !(newProps.secondCard===null)){
+        this.setState({
+            isLocked:true
+        })
+
+        setTimeout(()=>{
+            this.setState({
+                isLocked:false
+            })
+        },1500)
+      }
+
         if(newProps.firstCard===null && newProps.secondCard===null && !newProps.matchedCards.includes(this.props.image.id)){
             setTimeout(()=>{
                 this.setState({
                     cardFaceUp:false
+                    
                 })
-            },3000)   
+            },1000)   
         }else if(newProps.firstCard===null && !newProps.matchedCards.includes(this.props.image.id))
 
         if(newProps.matchedCards.includes(this.props.image.id)){
@@ -36,13 +53,14 @@ export default class Card extends Component {
         }
     }
 
+  
     
 
     render() {
        
         return (
             <div onClick={()=> {this.faceUp(); this.props.cardClick(this.props.image)}}>
-              {this.state.cardFaceUp ? <img src={this.props.image.image} alt="" width="200px" height="300px"/> : <img src={imageback} alt="" width="200px" height="300px"/>}
+              {this.state.cardFaceUp ? <FrontCard img={this.props.image} /> : <BackCard />}
             </div>
         )
     }
